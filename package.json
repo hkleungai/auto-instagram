@@ -5,17 +5,20 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "@types/web": "^0.0.115",
     "dotenv": "^16.3.1",
-    "esbuild-envfile-plugin": "^1.0.5",
     "tsx": "^3.12.8",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "undici": "^5.25.1"
   },
   "dependencies": {
     "canvas": "^2.11.2",
     "instagram-private-api": "^1.45.3"
   },
   "scripts": {
-    "dev": "node --watch --loader=tsx src/write-image-to-file.mts",
+    "dev": "node --loader=tsx",
+    "watch": "yarn dev --watch",
+    "write-image-to-file": "yarn watch src/write-image-to-file.mts",
     "start": "node --loader=tsx src/pub-image-to-ig.mts"
   }
 }
