@@ -8,6 +8,8 @@ class FontConfig {
 
     constructor(
         readonly size: CanvasConfig.FontSize,
+        readonly path: string,
+        readonly fontFace: { family: string, weight?: string, style?: string },
     ) {
         this.maxRow = FontConfig.MAX_ROW_LOOKUP[this.size];
         this.maxColumn = CanvasConfig.SIZE / this.size - /* spacing */2;
