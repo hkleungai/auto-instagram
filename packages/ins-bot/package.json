@@ -1,0 +1,18 @@
+{
+    "name": "ins-bot",
+    "devDependencies": {
+      "@types/node": "^20.5.9",
+      "@types/web": "^0.0.115",
+      "dotenv": "^16.3.1",
+      "tsx": "^3.12.8",
+      "typescript": "^5.2.2",
+      "undici": "^5.25.1"
+    },
+    "dependencies": {
+      "instagram-private-api": "^1.45.3"
+    },
+    "scripts": {
+      "dev": "node --loader=tsx",
+      "watch": "yarn dev --watch"
+    }
+  }

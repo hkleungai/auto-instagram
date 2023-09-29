@@ -1,0 +1,10 @@
+{
+    "name": "canvas-common",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/index.mts",
+    "dependencies": {
+        "canvas": "^2.11.2"
+    }
+}

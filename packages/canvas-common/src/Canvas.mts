@@ -8,15 +8,17 @@ import {
 
 import CanvasConfig from "./CanvasConfig.mjs";
 import FontConfig from "./FontConfig.mjs";
+import InsBotError from "./InsBotError.mjs";
 
 class Canvas {
-    private readonly nodeCanvas: NodeCanvas;
+    readonly nodeCanvas: NodeCanvas;
     private readonly nodeCanvasContext: NodeCanvasContext;
     private readonly title?: string;
     private readonly content: string;
 
     constructor(
         private readonly fontConfig: FontConfig,
+        private readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
         _content: string,
         _title?: string,
     ) {
@@ -26,16 +28,20 @@ class Canvas {
             this.title = _title;
         }
         this.content = this.getContent(_content);
+
+        this.fillArticle();
     }
 
     private getNodeCanvasContext(): NodeCanvasContext {
-        registerFont(this.fontConfig.path, this.fontConfig.fontFace);
+        if (!!registerFont && this.fontConfig.path && this.fontConfig.fontFace) {
+            registerFont(this.fontConfig.path, this.fontConfig.fontFace);
+        }
 
         const result = this.nodeCanvas.getContext('2d');
 
         result.fillStyle = "#ffffff";
         result.fillRect(0, 0, CanvasConfig.SIZE, CanvasConfig.SIZE);
-        result.font = `${this.fontConfig.size}px ${this.fontConfig.fontFace.family}`;
+        result.font = `${this.fontConfig.size}px '${this.fontConfig.fontFace.family}'`;
         result.textAlign = "center";
         result.textBaseline = 'top';
         result.fillStyle = "#000000";
@@ -64,13 +70,13 @@ class Canvas {
         const yStart = fontSize * 1.125;
         this.nodeCanvasContext.fillText(this.title, xStart, yStart);
 
-        this.nodeCanvasContext.fillRect(CanvasConfig.SIZE / 2 - fontSize * ((this.title.length) / 2), yStart + fontSize * 1.3125, fontSize * this.title.length, 1);
+        this.nodeCanvasContext.fillRect(CanvasConfig.SIZE / 2 - fontSize * ((this.title.length) / 2), yStart + fontSize * CanvasConfig.TITLE_UNDERLINE_SPACING_LOOKUP[this.platform], fontSize * this.title.length, 1);
     }
 
-    drawToJpegBuffer(): Buffer {
+    private fillContent() {
         const { size: fontSize, maxColumn } = this.fontConfig;
 
-        this.fillTitle();
+        // this.fillTitle();
 
         for (
             let characterCount = 0,
@@ -89,7 +95,20 @@ class Canvas {
 
             characterCount += (maxColumn + offset);
         }
+    }
 
+    private fillArticle() {
+        this.fillTitle();
+        this.fillContent();
+    }
+
+    toJpegBuffer() {
+        if (this.platform !== 'NODE') {
+            throw new InsBotError(
+                /* message */`Unsupported operation for platform = ${this.platform}`,
+                { __scope: 'canvas-to-jpeg-buffer' }
+            )
+        }
         return this.nodeCanvas.toBuffer('image/jpeg');
     }
 }

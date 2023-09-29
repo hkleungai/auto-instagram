@@ -2,13 +2,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-import Canvas from "./Canvas.mjs";
-import FontConfig from "./FontConfig.mjs";
+import { Canvas, FontConfig } from "canvas-common";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const outputFolderPath = path.resolve(__dirname, 'assets', 'chinese-articles');
+const outputFolderPath = path.resolve(__dirname, '..', 'canvas-image-snapshots', 'chinese-articles');
 
 if (!fs.existsSync(outputFolderPath)) {
     fs.mkdirSync(outputFolderPath, { recursive: true });
@@ -17,8 +16,8 @@ if (!fs.existsSync(outputFolderPath)) {
 for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
     const fontConfig = new FontConfig(
         /* size */fontSize,
-        /* path */'src/BiauKai.ttc',
         /* fontFace */{ family: 'BiauKai' },
+        /* path */'../../assets/BiauKaiHK.ttf',
     );
 
     const contents: Record<string, { title: string; content: string; }> = {
@@ -46,10 +45,11 @@ for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
             const fullOutputFileName = path.resolve(outputFolderPath, fileName);
             const canvas = new Canvas(
                 /* fontConfig */fontConfig,
+                /* platform */'NODE',
                 /* _content */contents[type].content,
                 /* _title */withTitle ? contents[type].title : undefined,
             )
-            const buffer = canvas.drawToJpegBuffer()
+            const buffer = canvas.toJpegBuffer()
 
             fs.writeFileSync(fullOutputFileName, buffer);
         }

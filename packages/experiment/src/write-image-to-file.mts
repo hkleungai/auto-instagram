@@ -7,9 +7,11 @@ import makeHelloWorldBuffer from './make-hello-world-buffer.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-if (!fs.existsSync(path.resolve(__dirname, 'assets'))) {
-    fs.mkdirSync(path.resolve(__dirname, 'assets'));
+const outputFolderPath = path.resolve(__dirname, '..', 'canvas-image-snapshots');
+
+if (!fs.existsSync(outputFolderPath)) {
+    fs.mkdirSync(outputFolderPath, { recursive: true });
 }
 
 const buffer = makeHelloWorldBuffer();
-fs.writeFileSync(path.resolve(__dirname, 'assets', 'test.png'), buffer);
+fs.writeFileSync(path.resolve(outputFolderPath, 'hello-world.png'), buffer);
