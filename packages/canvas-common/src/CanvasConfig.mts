@@ -1,4 +1,4 @@
-import InsBotError from "./InsBotError.mjs";
+import MaybeLookup from "./MaybeLookup.mts";
 
 class CanvasConfig {
     static get SIZE(): number {
@@ -31,25 +31,15 @@ class CanvasConfig {
     //      Web and node render the same canvas setup differently.
     //      The most significant difference is on font weights and title underline spacing.
     //      Here just do some temp (or maybe non-temp) hack.
-    static readonly TITLE_UNDERLINE_SPACING_LOOKUP: Readonly<Record<CanvasConfig.SUPPORTED_PLATFORM, number>> = (
-        new Proxy(
-            {
+    static readonly TITLE_UNDERLINE_SPACING_LOOKUP = (
+        new MaybeLookup<Record<CanvasConfig.SUPPORTED_PLATFORM, number>>(
+            /* lookup */{
                 WEB: 1.125,
                 NODE: 1.3125
-            } as Readonly<Record<CanvasConfig.SUPPORTED_PLATFORM, number>>,
-            {
-                get(target, platform: CanvasConfig.SUPPORTED_PLATFORM) {
-                    if (Object.hasOwn(target, platform)) {
-                        return target[platform];
-                    }
-
-                    throw new InsBotError(
-                        `Undetermined title-underline spacing for platform = ${platform}`,
-                        { __scope: 'canvas-config' },
-                    )
-                }
-            }
+            },
+            /* scope */'canvas-config-underline-spacing-lookup',
         )
+            .get()
     );
 }
 

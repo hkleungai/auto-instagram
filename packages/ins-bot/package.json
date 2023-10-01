@@ -1,5 +1,6 @@
 {
     "name": "ins-bot",
+    "license": "MIT",
     "devDependencies": {
       "@types/node": "^20.5.9",
       "@types/web": "^0.0.115",
@@ -12,7 +13,7 @@
       "instagram-private-api": "^1.45.3"
     },
     "scripts": {
-      "dev": "node --loader=tsx",
+      "dev": "node --no-warnings=ExperimentalWarning --loader=tsx",
       "watch": "yarn dev --watch"
     }
   }

@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "type": "module",
     "main": "src/index.mts",
+    "license": "MIT",
     "dependencies": {
         "canvas": "^2.11.2"
     }

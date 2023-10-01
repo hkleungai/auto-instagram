@@ -1,4 +1,4 @@
-class InsBotError extends Error {
+class Bug extends Error {
     constructor(
         message?: string,
         options?: ErrorOptions & { __scope?: string }
@@ -9,4 +9,4 @@ class InsBotError extends Error {
     }
 }
 
-export default InsBotError;
+export default Bug;

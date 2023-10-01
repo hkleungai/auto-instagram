@@ -1,5 +1,5 @@
 import CanvasConfig from "./CanvasConfig.mjs";
-import InsBotError from "./InsBotError.mjs";
+import MaybeLookup from "./MaybeLookup.mjs";
 
 class FontConfig {
     readonly maxRow: number;
@@ -15,31 +15,19 @@ class FontConfig {
         this.maxColumn = CanvasConfig.SIZE / this.size - /* spacing */2;
     }
 
-    private static readonly MAX_ROW_LOOKUP: Readonly<Record<CanvasConfig.FontSize, number>> = (
-        new Proxy(
-            {
+    private static readonly MAX_ROW_LOOKUP = (
+        new MaybeLookup<Record<CanvasConfig.FontSize, number>>(
+            /* lookup */{
                 20: 30,
                 25: 24,
                 32: 18,
                 40: 14,
                 50: 11,
                 80: 6,
-            } as Readonly<Record<CanvasConfig.FontSize, number>>,
-            {
-                get(target, _prop) {
-                    const prop = _prop as unknown as CanvasConfig.FontSize;
-
-                    if (Object.hasOwn(target, prop)) {
-                        return target[prop];
-                    }
-
-                    throw new InsBotError(
-                        `Undetermined max line number for font size = ${prop}`,
-                        { __scope: 'canvas-font-config' },
-                    )
-                }
-            }
+            },
+            /* scope */'font-config-max-row-lookup',
         )
+            .get()
     );
 }
 

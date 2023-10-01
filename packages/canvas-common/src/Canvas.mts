@@ -8,7 +8,7 @@ import {
 
 import CanvasConfig from "./CanvasConfig.mjs";
 import FontConfig from "./FontConfig.mjs";
-import InsBotError from "./InsBotError.mjs";
+import Bug from "./Bug.mjs";
 
 class Canvas {
     readonly nodeCanvas: NodeCanvas;
@@ -76,8 +76,6 @@ class Canvas {
     private fillContent() {
         const { size: fontSize, maxColumn } = this.fontConfig;
 
-        // this.fillTitle();
-
         for (
             let characterCount = 0,
                 lineCount = +!!this.title;
@@ -104,7 +102,7 @@ class Canvas {
 
     toJpegBuffer() {
         if (this.platform !== 'NODE') {
-            throw new InsBotError(
+            throw new Bug(
                 /* message */`Unsupported operation for platform = ${this.platform}`,
                 { __scope: 'canvas-to-jpeg-buffer' }
             )
