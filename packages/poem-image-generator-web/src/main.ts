@@ -1,4 +1,4 @@
-import { Canvas, FontConfig } from "canvas-common";
+import { SingleParagraphCanvas, FontConfig } from "canvas-common";
 import { setupCounter } from './counter.js'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -45,7 +45,7 @@ async function main() {
 
             for (const { withTitle } of fileNames) {
                 // const fullOutputFileName = path.resolve(outputFolderPath, fileName);
-                const canvas = new Canvas(
+                const canvas = new SingleParagraphCanvas(
                     /* fontConfig */fontConfig,
                     /* platform */'WEB',
                     /* _content */contents[type].content,

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-import { Canvas, FontConfig } from "canvas-common";
+import { SingleParagraphCanvas, FontConfig } from "canvas-common";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,7 +43,7 @@ for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
 
         for (const { withTitle, fileName } of fileNames) {
             const fullOutputFileName = path.resolve(outputFolderPath, fileName);
-            const canvas = new Canvas(
+            const canvas = new SingleParagraphCanvas(
                 /* fontConfig */fontConfig,
                 /* platform */'NODE',
                 /* _content */contents[type].content,
