@@ -43,7 +43,11 @@ abstract class CanvasBase {
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
         _content: string,
         titleConfig?: CanvasBase.TitleConfig,
+        options?: Record<string, unknown>,
     ) {
+        // I probably should not do that, but wfc :)
+        Object.assign(this, options);
+
         this.nodeCanvas = createCanvas(CanvasConfig.SIZE, CanvasConfig.SIZE);
 
         this.nodeCanvasContext = this.getNodeCanvasContext();
@@ -96,6 +100,15 @@ abstract class CanvasBase {
         const underlineHeight = 1;
         this.nodeCanvasContext.fillRect(underlineStartX, underlineStartY, underlineWidth, underlineHeight);
     };
+
+    protected get titleTextAsBool() {
+        return Boolean(this.titleText);
+    }
+
+    protected get titleTextAsNumber() {
+        return Number(this.titleTextAsBool);
+    }
+
 }
 
 namespace CanvasBase {
