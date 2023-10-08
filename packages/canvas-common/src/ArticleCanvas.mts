@@ -14,31 +14,8 @@ class ArticleCanvas extends SingleParagraphCanvas {
         super(fontConfig, platform, paragraphs, titleText, { paragraphSeparator, ...options });
     }
 
-    protected getContent(_content: string): string {
-        const { maxColumn } = this.fontConfig;
-
-        const paragraphs = _content.split(this.paragraphSeparator);
-
-        let usedRowCount = this.titleTextAsNumber;
-
-        let resultSegments: string[] = [];
-
-        for (const rawParagraph of paragraphs) {
-            const paragraph = super.getContent(rawParagraph, usedRowCount);
-
-            if (!paragraph) {
-                break;
-            }
-
-            usedRowCount += Math.ceil((rawParagraph.length + 2) / maxColumn);
-
-            resultSegments.push(paragraph);
-        }
-
-        return resultSegments.join(this.paragraphSeparator);
-    }
-
     protected fillContent() {
+        const { BEGIN_PADDING_SIZE } = SingleParagraphCanvas;
         const { maxColumn } = this.fontConfig;
 
         const contentSegments = this.content.split(this.paragraphSeparator);
@@ -47,9 +24,8 @@ class ArticleCanvas extends SingleParagraphCanvas {
 
         for (const contentSegment of contentSegments) {
             super.fillContent(usedRowCount, contentSegment);
-            usedRowCount += Math.ceil((contentSegment.length + 2) / maxColumn);
+            usedRowCount += Math.ceil((contentSegment.length + BEGIN_PADDING_SIZE) / maxColumn);
         }
-
     }
 }
 

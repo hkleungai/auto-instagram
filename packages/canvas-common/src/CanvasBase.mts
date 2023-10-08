@@ -12,7 +12,6 @@ import Bug from "./Bug.mjs";
 
 abstract class CanvasBase {
     /* TO BE IMPLEMENTED */
-    protected abstract getContent(_content: string): string;
     protected abstract fillContent(): void;
 
     /* PUBLIC API */
@@ -33,16 +32,12 @@ abstract class CanvasBase {
 
     /* PRIVATE PART THAT NOBODY SHOULD SEE :) */
     protected readonly nodeCanvasContext: NodeCanvasContext;
-    protected readonly content: string;
-    protected readonly titleText?: string;
-    protected readonly titleStartX?: number;
-    protected readonly titleStartY?: number;
 
     protected constructor(
         protected readonly fontConfig: FontConfig,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
-        _content: string,
-        titleConfig?: CanvasBase.TitleConfig,
+        protected readonly content: string,
+        protected readonly titleConfig?: CanvasBase.TitleConfig,
         options?: Record<string, unknown>,
     ) {
         // I probably should not do that, but wfc :)
@@ -51,14 +46,6 @@ abstract class CanvasBase {
         this.nodeCanvas = createCanvas(CanvasConfig.SIZE, CanvasConfig.SIZE);
 
         this.nodeCanvasContext = this.getNodeCanvasContext();
-
-        if (titleConfig) {
-            this.titleText = titleConfig.text;
-            this.titleStartX = titleConfig.startX;
-            this.titleStartY = titleConfig.startY;
-        }
-
-        this.content = this.getContent(_content);
 
         this.fillCanvas();
     }
@@ -86,23 +73,24 @@ abstract class CanvasBase {
     }
 
     private fillTitle(): void {
-        if (!this.titleText || !this.titleStartX || !this.titleStartY) {
+        if (!this.titleConfig) {
             return;
         }
 
+        const { text, startX, startY } = this.titleConfig;
         const { size: fontSize } = this.fontConfig;
 
-        this.nodeCanvasContext.fillText(this.titleText, this.titleStartX, this.titleStartY);
+        this.nodeCanvasContext.fillText(text, startX, startY);
 
-        const underlineStartX = this.titleStartX - fontSize * this.titleText.length / 2;
-        const underlineStartY = this.titleStartY + fontSize * CanvasConfig.TITLE_UNDERLINE_SPACING_LOOKUP[this.platform];
-        const underlineWidth = fontSize * this.titleText.length;
+        const underlineStartX = startX - fontSize * text.length / 2;
+        const underlineStartY = startY + fontSize * CanvasConfig.TITLE_UNDERLINE_SPACING_LOOKUP[this.platform];
+        const underlineWidth = fontSize * text.length;
         const underlineHeight = 1;
         this.nodeCanvasContext.fillRect(underlineStartX, underlineStartY, underlineWidth, underlineHeight);
     };
 
     protected get titleTextAsBool() {
-        return Boolean(this.titleText);
+        return Boolean(this.titleConfig?.text);
     }
 
     protected get titleTextAsNumber() {

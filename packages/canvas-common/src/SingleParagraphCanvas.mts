@@ -23,40 +23,29 @@ class SingleParagraphCanvas extends CanvasBase {
         super(fontConfig, platform, _content, titleConfig, options);
     }
 
-    protected getContent(_content: string, usedRowCount = this.titleTextAsNumber): string {
+    protected fillContent(lineCount = this.titleTextAsNumber, content = this.content) {
         const { BEGIN_PADDING_SIZE, TRAILING_ELLIPSIS } = SingleParagraphCanvas;
-        const { maxRow, maxColumn } = this.fontConfig;
-
-        const capacity = maxColumn * (maxRow - usedRowCount) - BEGIN_PADDING_SIZE;
-
-        if (capacity <= 0) {
-            return "";
-        }
-
-        if (_content.length <= capacity) {
-            return _content;
-        }
-
-        return _content.slice(0, capacity - TRAILING_ELLIPSIS.length) + TRAILING_ELLIPSIS;
-    }
-
-    protected fillContent(usedRowCount = this.titleTextAsNumber, content = this.content) {
-        const { size: fontSize, maxColumn } = this.fontConfig;
+        const { size: fontSize, maxRow, maxColumn } = this.fontConfig;
 
         for (
-            let characterCount = 0,
-                lineCount = usedRowCount;
-            characterCount < content.length;
+            let charPointer = 0;
+            charPointer < content.length && lineCount < maxRow;
             lineCount++
         ) {
-            const columnOffset = characterCount == 0 ? -SingleParagraphCanvas.BEGIN_PADDING_SIZE : 0;
+            const columnOffset = charPointer == 0 ? -BEGIN_PADDING_SIZE : 0;
+            const newCharPointer = charPointer + maxColumn + columnOffset;
+            const hasLongContentAtLastRow = lineCount + 1 === maxRow && newCharPointer < content.length;
 
-            const line = content.slice(characterCount, characterCount + maxColumn + columnOffset);
+            const lineStart = charPointer;
+            const lineEnd = newCharPointer - (hasLongContentAtLastRow ? TRAILING_ELLIPSIS.length : 0);
+            const lineSuffix = hasLongContentAtLastRow ? TRAILING_ELLIPSIS : '';
+            const line = content.slice(lineStart, lineEnd).concat(lineSuffix);
+
             const startX = CanvasConfig.SIZE / 2 - fontSize * ((maxColumn - line.length) / 2 + columnOffset);
             const startY = lineCount * fontSize * 1.25 + fontSize * 1.125;
             this.nodeCanvasContext.fillText(line, startX, startY);
 
-            characterCount += (maxColumn + columnOffset);
+            charPointer = newCharPointer;
         }
     }
 
