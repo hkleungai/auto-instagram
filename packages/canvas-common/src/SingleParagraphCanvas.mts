@@ -32,8 +32,8 @@ class SingleParagraphCanvas extends CanvasBase {
             charPointer < content.length && lineCount < maxRow;
             lineCount++
         ) {
-            const columnOffset = charPointer == 0 ? -BEGIN_PADDING_SIZE : 0;
-            const newCharPointer = charPointer + maxColumn + columnOffset;
+            const columnOffset = charPointer == 0 ? BEGIN_PADDING_SIZE : 0;
+            const newCharPointer = charPointer + maxColumn - columnOffset;
             const hasLongContentAtLastRow = lineCount + 1 === maxRow && newCharPointer < content.length;
 
             const lineStart = charPointer;
@@ -41,9 +41,11 @@ class SingleParagraphCanvas extends CanvasBase {
             const lineSuffix = hasLongContentAtLastRow ? TRAILING_ELLIPSIS : '';
             const line = content.slice(lineStart, lineEnd).concat(lineSuffix);
 
-            const startX = CanvasConfig.SIZE / 2 - fontSize * ((maxColumn - line.length) / 2 + columnOffset);
             const startY = lineCount * fontSize * 1.25 + fontSize * 1.125;
-            this.nodeCanvasContext.fillText(line, startX, startY);
+            for (let i = 0; i < line.length; i++) {
+                const startX = (i + columnOffset) * (fontSize) + fontSize * 1.5;
+                this.nodeCanvasContext.fillText(line[i], startX, startY);
+            }
 
             charPointer = newCharPointer;
         }

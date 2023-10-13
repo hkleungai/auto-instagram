@@ -15,11 +15,11 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
 
-async function main() {
+function main() {
     for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
         const fontConfig = new FontConfig(
             /* size */fontSize,
-            /* fontFace */{ family: 'BK' },
+            /* fontFace */{ family: 'cwTeXKai' },
         );
 
         const contents: Record<string, { title: string; content: string; }> = {

@@ -59,7 +59,14 @@ abstract class CanvasBase {
 
         result.fillStyle = "#ffffff";
         result.fillRect(0, 0, CanvasConfig.SIZE, CanvasConfig.SIZE);
-        result.font = `${this.fontConfig.size}px '${this.fontConfig.fontFace.family}'`;
+        result.font = [
+            this.fontConfig.fontFace.style,
+            this.fontConfig.fontFace.weight,
+            `${this.fontConfig.size}px`,
+            this.fontConfig.fontFace.family,
+        ]
+            .filter(Boolean)
+            .join(' ');
         result.textAlign = "center";
         result.textBaseline = 'top';
         result.fillStyle = "#000000";
@@ -77,16 +84,19 @@ abstract class CanvasBase {
             return;
         }
 
-        const { text, startX, startY } = this.titleConfig;
         const { size: fontSize } = this.fontConfig;
+        const { text, startX, startY } = this.titleConfig;
 
-        this.nodeCanvasContext.fillText(text, startX, startY);
-
-        const underlineStartX = startX - fontSize * text.length / 2;
-        const underlineStartY = startY + fontSize * CanvasConfig.TITLE_UNDERLINE_SPACING_LOOKUP[this.platform];
+        const underlineStartX = startX - text.length * fontSize / 2;
+        const underlineStartY = startY + fontSize;
         const underlineWidth = fontSize * text.length;
-        const underlineHeight = 1;
+        const underlineHeight = 4;
         this.nodeCanvasContext.fillRect(underlineStartX, underlineStartY, underlineWidth, underlineHeight);
+
+        for (let i = 0; i < text.length; i++) {
+            const startXi = underlineStartX + (i + 0.5) * fontSize;
+            this.nodeCanvasContext.fillText(text[i], startXi, startY);
+        }
     };
 
     protected get titleTextAsBool() {
