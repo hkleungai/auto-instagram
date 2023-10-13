@@ -1,0 +1,24 @@
+{
+    "name": "tradem-generator",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "canvas-common": "link:../canvas-common",
+        "fontfaceobserver": "^2.3.0",
+        "solid-js": "^1.7.8"
+    },
+    "devDependencies": {
+        "@types/fontfaceobserver": "^2.1.1",
+        "@types/node": "^20.8.5",
+        "tsx": "^3.12.8",
+        "typescript": "^5.0.2",
+        "vite": "^4.4.5",
+        "vite-plugin-solid": "^2.7.0"
+    }
+}

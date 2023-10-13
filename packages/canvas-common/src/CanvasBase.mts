@@ -15,7 +15,16 @@ abstract class CanvasBase {
     protected abstract fillContent(): void;
 
     /* PUBLIC API */
-    public readonly nodeCanvas: NodeCanvas;
+    public get htmlCanvas(): HTMLCanvasElement {
+        if (this.nodeCanvas instanceof HTMLCanvasElement) {
+            return this.nodeCanvas;
+        }
+
+        throw new Bug(
+            'canvas in "node-canvas" package is no longer an `HTMLCanvasElement`',
+            { __scope: 'canvas-base--get-html-canvas' }
+        );
+    }
     public toJpegBuffer(): Buffer {
         switch (this.platform) {
             case 'NODE': {
@@ -24,13 +33,14 @@ abstract class CanvasBase {
             default: {
                 throw new Bug(
                     /* message */`Unsupported operation for platform = ${this.platform}`,
-                    { __scope: 'canvas-to-jpeg-buffer' }
+                    { __scope: 'canvas-base--to-jpeg-buffer' }
                 );
             }
         }
     }
 
     /* PRIVATE PART THAT NOBODY SHOULD SEE :) */
+    private readonly nodeCanvas: NodeCanvas;
     protected readonly nodeCanvasContext: NodeCanvasContext;
 
     protected constructor(
@@ -90,7 +100,7 @@ abstract class CanvasBase {
         const underlineStartX = startX - text.length * fontSize / 2;
         const underlineStartY = startY + fontSize;
         const underlineWidth = fontSize * text.length;
-        const underlineHeight = 4;
+        const underlineHeight = 3;
         this.nodeCanvasContext.fillRect(underlineStartX, underlineStartY, underlineWidth, underlineHeight);
 
         for (let i = 0; i < text.length; i++) {
