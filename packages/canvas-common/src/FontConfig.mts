@@ -1,5 +1,5 @@
-import CanvasConfig from "./CanvasConfig.mjs";
-import MaybeLookup from "./MaybeLookup.mjs";
+import CanvasConfig from './CanvasConfig.mjs';
+import MaybeLookup from './MaybeLookup.mjs';
 
 class FontConfig {
     readonly maxRow: number;

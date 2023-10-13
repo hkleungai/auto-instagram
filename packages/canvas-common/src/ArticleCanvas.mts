@@ -1,6 +1,6 @@
-import SingleParagraphCanvas from "./SingleParagraphCanvas.mjs";
-import CanvasConfig from "./CanvasConfig.mjs";
-import FontConfig from "./FontConfig.mjs";
+import SingleParagraphCanvas from './SingleParagraphCanvas.mjs';
+import CanvasConfig from './CanvasConfig.mjs';
+import FontConfig from './FontConfig.mjs';
 
 class ArticleCanvas extends SingleParagraphCanvas {
     constructor(

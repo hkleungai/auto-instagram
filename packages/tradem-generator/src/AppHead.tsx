@@ -10,15 +10,19 @@ function AppHead() {
     ] as const;
 
     return (
-        <For each={zhEarlyAccessFonts}>
-            {(zhEarlyAccessFont) => (
-                <link
-                    href={`https://fonts.googleapis.com/earlyaccess/${zhEarlyAccessFont}.css`}
-                    rel="stylesheet preload"
-                    as="style"
-                />
-            )}
-        </For>
+        <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+            <For each={zhEarlyAccessFonts}>
+                {(zhEarlyAccessFont) => (
+                    <link
+                        href={`https://fonts.googleapis.com/earlyaccess/${zhEarlyAccessFont}.css`}
+                        rel="stylesheet preload"
+                        as="style"
+                    />
+                )}
+            </For>
+        </>
     )
 }
 

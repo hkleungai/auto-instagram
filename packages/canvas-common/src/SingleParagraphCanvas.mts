@@ -1,6 +1,6 @@
-import CanvasBase from "./CanvasBase.mts";
-import CanvasConfig from "./CanvasConfig.mjs";
-import FontConfig from "./FontConfig.mjs";
+import CanvasBase from './CanvasBase.mts';
+import CanvasConfig from './CanvasConfig.mjs';
+import FontConfig from './FontConfig.mjs';
 
 class SingleParagraphCanvas extends CanvasBase {
     constructor(

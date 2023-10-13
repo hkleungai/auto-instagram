@@ -1,4 +1,4 @@
-import Bug from "./Bug.mts";
+import Bug from './Bug.mts';
 
 class MaybeLookup<T> {
     readonly proxy: T;

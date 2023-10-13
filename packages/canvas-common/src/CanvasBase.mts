@@ -4,11 +4,11 @@ import {
 
     createCanvas,
     registerFont,
-} from "canvas";
+} from 'canvas';
 
-import CanvasConfig from "./CanvasConfig.mjs";
-import FontConfig from "./FontConfig.mjs";
-import Bug from "./Bug.mjs";
+import CanvasConfig from './CanvasConfig.mjs';
+import FontConfig from './FontConfig.mjs';
+import Bug from './Bug.mjs';
 
 abstract class CanvasBase {
     /* TO BE IMPLEMENTED */
@@ -67,7 +67,7 @@ abstract class CanvasBase {
 
         const result = this.nodeCanvas.getContext('2d');
 
-        result.fillStyle = "#ffffff";
+        result.fillStyle = '#ffffff';
         result.fillRect(0, 0, CanvasConfig.SIZE, CanvasConfig.SIZE);
         result.font = [
             this.fontConfig.fontFace.style,
@@ -77,9 +77,9 @@ abstract class CanvasBase {
         ]
             .filter(Boolean)
             .join(' ');
-        result.textAlign = "center";
+        result.textAlign = 'center';
         result.textBaseline = 'top';
-        result.fillStyle = "#000000";
+        result.fillStyle = '#000000';
 
         return result;
     }
