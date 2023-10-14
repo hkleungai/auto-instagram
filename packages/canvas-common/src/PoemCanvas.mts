@@ -9,7 +9,7 @@ class PoemCanvas extends CanvasBase {
         fontFace: FontConfig.FontFace,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
         content: string,
-        titleText: string,
+        titleText?: string,
         options?: Record<string, unknown>,
     ) {
         const { LINE_SPACING } = PoemCanvas;
@@ -21,10 +21,14 @@ class PoemCanvas extends CanvasBase {
         const fontSize = row <= 4 ? 80 : 50;
         const fontConfig = new FontConfig(fontSize, fontFace);
 
-        const titleConfig: CanvasBase.TitleConfig = {
-            text: titleText,
-            startX: CanvasConfig.SIZE / 2,
-        };
+        const titleConfig: CanvasBase.TitleConfig | undefined = (
+            titleText
+                ? {
+                    text: titleText,
+                    startX: CanvasConfig.SIZE / 2,
+                }
+                : undefined
+        );
 
         super(fontConfig, platform, content, paddingTop, titleConfig, { ...options, wordCountPerRow, row });
     }
@@ -40,9 +44,10 @@ class PoemCanvas extends CanvasBase {
         ) {
             const newCharPointer = charPointer + this.wordCountPerRow + 1;
             const line = content.slice(charPointer, newCharPointer);
-            const scaledLineSpacing = fontSize * LINE_SPACING;
 
+            const scaledLineSpacing = fontSize * LINE_SPACING;
             const startY = lineCount * scaledLineSpacing + this.scaledPaddingTop;
+
             for (let i = 0; i < line.length; i++) {
                 const startX = (i + this.columnPadding) * fontSize + scaledLineSpacing;
                 this.nodeCanvasContext.fillText(line[i], startX, startY);

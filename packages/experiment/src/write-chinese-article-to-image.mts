@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-import { ArticleCanvas, SingleParagraphCanvas, FontConfig } from "canvas-common";
+import { ArticleCanvas, SingleParagraphCanvas, FontConfig, PoemCanvas } from "canvas-common";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,11 +14,20 @@ if (!fs.existsSync(outputFolderPath)) {
 }
 
 const fontSizes = [20, 25, 32, 40, 50, 80] as const;
-type CanvasArg = {
-    title: string;
-    content: string;
-    kind: 'sentence' | 'paragraph' | 'article',
-};
+type CanvasArg = (
+    | {
+        title: string;
+        content: string;
+        kind: 'sentence' | 'paragraph' | 'article',
+    }
+    | {
+        title: string;
+        content: string;
+        wordCountPerRow: PoemCanvas['wordCountPerRow'];
+        row: PoemCanvas['row'];
+        kind: `poem${string}`
+    }
+);
 
 const canvasArgs: CanvasArg[] = [
     {
@@ -40,14 +49,28 @@ const canvasArgs: CanvasArg[] = [
 陳王昔時宴平樂，斗酒十千恣歡謔。主人何為言少錢？徑須沽取對君酌。五花馬，千金裘。呼兒將出換美酒，與爾同銷萬古愁。
                  `.trim(),
         kind: 'article',
-    }
+    },
+    {
+        title: '靜夜思',
+        content: '床前明月光，疑是地上霜。舉頭望明月，低頭思故鄉。',
+        wordCountPerRow: 5,
+        row: 4,
+        kind: 'poem-ng5-jin4',
+    },
+    {
+        title: '蜀相',
+        content: '丞相祠堂何處尋，錦官城外柏森森。映階碧草自春色，隔葉黃鸝空好音。三顧頻煩天下計，兩朝開濟老臣心。出師未捷身先死，長使英雄淚滿襟。',
+        wordCountPerRow: 7,
+        row: 8,
+        kind: 'poem-cat1-leot6',
+    },
 ];
 
 for (const fontSize of fontSizes) {
     const fontConfig = new FontConfig(
         /* size */fontSize,
-        /* fontFace */{ family: 'BiauKai' },
-        /* path */'../../assets/BiauKaiHK.ttf',
+        /* fontFace */{ family: 'cwtexkai' },
+        /* path */'../../assets/cwTeXKai-zhonly.ttf',
     );
 
     for (const canvasArg of canvasArgs) {
@@ -69,16 +92,57 @@ for (const fontSize of fontSizes) {
                             /* paragraphSeparator */'\n',
                             /* titleText */withTitle ? canvasArg.title : undefined,
                         );
-                    default:
+                    case 'sentence':
+                    case 'paragraph':
                         return new SingleParagraphCanvas(
                             /* fontConfig */fontConfig,
                             /* platform */'NODE',
                             /* content */canvasArg.content,
                             /* titleText */withTitle ? canvasArg.title : undefined,
                         );
+                    default:
+                        return null;
                 }
             })();
 
+            if (canvas) {
+                const buffer = canvas.toJpegBuffer()
+
+                fs.writeFileSync(fullOutputFileName, buffer);
+            }
+        }
+    }
+}
+
+const fontFace: FontConfig.FontFace = { family: 'cwtexkai'};
+
+for (const canvasArg of canvasArgs) {
+    const fileNames = [
+        { withTitle: false, fileName: `test-${canvasArg.kind}.jpg` },
+        { withTitle: true, fileName: `test-${canvasArg.kind}-with-title.jpg` },
+    ]
+
+    for (const { withTitle, fileName } of fileNames) {
+        const fullOutputFileName = path.resolve(outputFolderPath, fileName);
+
+        const canvas = (() => {
+            switch (canvasArg.kind) {
+                case 'poem-ng5-jin4':
+                case 'poem-cat1-leot6':
+                    return new PoemCanvas(
+                        /* wordCountPerRow */canvasArg.wordCountPerRow,
+                        /* row */canvasArg.row,
+                        /* fontFace */fontFace,
+                        /* platform */'NODE',
+                        /* paragraphs */canvasArg.content,
+                        /* titleText */withTitle ? canvasArg.title : undefined,
+                    );
+                default:
+                    return null;
+            }
+        })();
+
+        if (canvas) {
             const buffer = canvas.toJpegBuffer()
 
             fs.writeFileSync(fullOutputFileName, buffer);

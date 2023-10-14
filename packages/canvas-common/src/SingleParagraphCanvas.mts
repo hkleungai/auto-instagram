@@ -10,7 +10,7 @@ class SingleParagraphCanvas extends CanvasBase {
         titleText?: string,
         options?: Record<string, unknown>,
     ) {
-        const paddingTop = 1.125;
+        const paddingTop = 1.375;
 
         const titleConfig: CanvasBase.TitleConfig | undefined = (
             titleText
@@ -25,7 +25,7 @@ class SingleParagraphCanvas extends CanvasBase {
     }
 
     protected fillContent(lineCount = this.titleTextAsNumber, content = this.content) {
-        const { BEGIN_PADDING_SIZE, TRAILING_ELLIPSIS } = SingleParagraphCanvas;
+        const { BEGIN_PADDING_SIZE, LINE_SPACING, TRAILING_ELLIPSIS } = SingleParagraphCanvas;
         const { size: fontSize, maxRow, maxColumn } = this.fontConfig;
 
         for (
@@ -42,9 +42,11 @@ class SingleParagraphCanvas extends CanvasBase {
             const lineSuffix = hasLongContentAtLastRow ? TRAILING_ELLIPSIS : '';
             const line = content.slice(lineStart, lineEnd).concat(lineSuffix);
 
-            const startY = lineCount * fontSize * 1.25 + fontSize * 1.125;
+            const scaledLineSpacing = fontSize * LINE_SPACING;
+            const startY = lineCount * scaledLineSpacing + this.scaledPaddingTop;
+
             for (let i = 0; i < line.length; i++) {
-                const startX = (i + columnOffset) * (fontSize) + fontSize * 1.5;
+                const startX = (i + columnOffset) * fontSize + scaledLineSpacing;
                 this.nodeCanvasContext.fillText(line[i], startX, startY);
             }
 
@@ -58,6 +60,10 @@ class SingleParagraphCanvas extends CanvasBase {
 
     protected static get BEGIN_PADDING_SIZE() {
         return 2;
+    }
+
+    protected static get LINE_SPACING() {
+        return 1.25;
     }
 }
 
