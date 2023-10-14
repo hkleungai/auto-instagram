@@ -5,7 +5,7 @@ function AppHead() {
         'cwtexkai',
         'cwtexyen',
         'cwtexfangsong',
-        'notosanstc',
+        // 'notosanstc',
         'cwtexming',
     ] as const;
 

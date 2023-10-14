@@ -47,6 +47,7 @@ abstract class CanvasBase {
         protected readonly fontConfig: FontConfig,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
         protected readonly content: string,
+        protected readonly paddingTop: number,
         protected readonly titleConfig?: CanvasBase.TitleConfig,
         options?: Record<string, unknown>,
     ) {
@@ -95,17 +96,17 @@ abstract class CanvasBase {
         }
 
         const { size: fontSize } = this.fontConfig;
-        const { text, startX, startY } = this.titleConfig;
+        const { text, startX } = this.titleConfig;
 
         const underlineStartX = startX - text.length * fontSize / 2;
-        const underlineStartY = startY + fontSize;
+        const underlineStartY = this.scaledPaddingTop + fontSize;
         const underlineWidth = fontSize * text.length;
         const underlineHeight = 3;
         this.nodeCanvasContext.fillRect(underlineStartX, underlineStartY, underlineWidth, underlineHeight);
 
         for (let i = 0; i < text.length; i++) {
             const startXi = underlineStartX + (i + 0.5) * fontSize;
-            this.nodeCanvasContext.fillText(text[i], startXi, startY);
+            this.nodeCanvasContext.fillText(text[i], startXi, this.scaledPaddingTop);
         }
     };
 
@@ -117,13 +118,15 @@ abstract class CanvasBase {
         return Number(this.titleTextAsBool);
     }
 
+    protected get scaledPaddingTop() {
+        return this.paddingTop * this.fontConfig.size;
+    }
 }
 
 namespace CanvasBase {
     export interface TitleConfig {
         text: string;
         startX: number;
-        startY: number;
     }
 }
 

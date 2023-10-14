@@ -6,21 +6,22 @@ class SingleParagraphCanvas extends CanvasBase {
     constructor(
         protected readonly fontConfig: FontConfig,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
-        _content: string,
+        content: string,
         titleText?: string,
         options?: Record<string, unknown>,
     ) {
+        const paddingTop = 1.125;
+
         const titleConfig: CanvasBase.TitleConfig | undefined = (
             titleText
                 ? {
                     text: titleText,
                     startX: CanvasConfig.SIZE / 2,
-                    startY: fontConfig.size * 1.125,
                 }
                 : undefined
         );
 
-        super(fontConfig, platform, _content, titleConfig, options);
+        super(fontConfig, platform, content, paddingTop, titleConfig, options);
     }
 
     protected fillContent(lineCount = this.titleTextAsNumber, content = this.content) {

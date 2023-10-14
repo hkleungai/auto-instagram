@@ -4,6 +4,7 @@ import SingleParagraphCanvas from './SingleParagraphCanvas.mjs';
 import CanvasConfig from './CanvasConfig.mjs';
 import FontConfig from './FontConfig.mjs';
 import MaybeLookup from './MaybeLookup.mjs';
+import PoemCanvas from './PoemCanvas.mts';
 
 export {
     ArticleCanvas,
@@ -12,4 +13,5 @@ export {
     CanvasConfig,
     FontConfig,
     MaybeLookup,
+    PoemCanvas,
 };

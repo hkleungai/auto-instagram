@@ -8,7 +8,7 @@ class FontConfig {
 
     constructor(
         readonly size: CanvasConfig.FontSize,
-        readonly fontFace: { family: string, weight?: string, style?: string },
+        readonly fontFace: FontConfig.FontFace,
         readonly path?: string,
     ) {
         this.maxRow = FontConfig.MAX_ROW_LOOKUP[this.size];
@@ -29,6 +29,14 @@ class FontConfig {
         )
             .get()
     );
+}
+
+namespace FontConfig {
+    export interface FontFace {
+        family: string;
+        weight?: string | undefined;
+        style?: string | undefined;
+    }
 }
 
 export default FontConfig;

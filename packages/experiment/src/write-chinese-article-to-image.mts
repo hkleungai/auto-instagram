@@ -73,7 +73,7 @@ for (const fontSize of fontSizes) {
                         return new SingleParagraphCanvas(
                             /* fontConfig */fontConfig,
                             /* platform */'NODE',
-                            /* _content */canvasArg.content,
+                            /* content */canvasArg.content,
                             /* titleText */withTitle ? canvasArg.title : undefined,
                         );
                 }
