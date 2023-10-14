@@ -70,7 +70,7 @@ function makeCanvases2(canvases: HTMLCanvasElement[]) {
         'cwtexming',
     ] as const) {
         const canvas54 = new PoemCanvas(
-            /* wordCountPerRow */5,
+            /* wordPerRow */5,
             /* Row */4,
             /* font */{ family, weight: '500' },
             /* platform */'WEB',
@@ -80,7 +80,7 @@ function makeCanvases2(canvases: HTMLCanvasElement[]) {
         canvases.push(canvas54.htmlCanvas);
 
         const canvas78 = new PoemCanvas(
-            /* wordCountPerRow */7,
+            /* wordPerRow */7,
             /* Row */8,
             /* font */{ family, weight: '500' },
             /* platform */'WEB',

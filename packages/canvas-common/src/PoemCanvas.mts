@@ -4,7 +4,7 @@ import FontConfig from './FontConfig.mjs';
 
 class PoemCanvas extends CanvasBase {
     constructor(
-        public readonly wordCountPerRow: 1 | 2 | 3 | 4 | 5 | 6 | 7,
+        public readonly wordPerRow: 1 | 2 | 3 | 4 | 5 | 6 | 7,
         public readonly row: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
         fontFace: FontConfig.FontFace,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
@@ -30,20 +30,20 @@ class PoemCanvas extends CanvasBase {
                 : undefined
         );
 
-        super(fontConfig, platform, content, paddingTop, titleConfig, { ...options, wordCountPerRow, row });
+        super(fontConfig, platform, content, paddingTop, titleConfig, { ...options, wordPerRow, row });
     }
 
-    protected fillContent(lineCount = this.titleTextAsNumber, content = this.content) {
+    protected fillContent() {
         const { LINE_SPACING } = PoemCanvas;
         const { size: fontSize } = this.fontConfig;
 
         for (
-            let charPointer = 0;
+            let charPointer = 0, lineCount = this.titleTextAsNumber;
             lineCount - this.titleTextAsNumber < this.row;
             lineCount++
         ) {
-            const newCharPointer = charPointer + this.wordCountPerRow + 1;
-            const line = content.slice(charPointer, newCharPointer);
+            const newCharPointer = charPointer + this.wordPerRow + 1;
+            const line = this.content.slice(charPointer, newCharPointer);
 
             const scaledLineSpacing = fontSize * LINE_SPACING;
             const startY = lineCount * scaledLineSpacing + this.scaledPaddingTop;
@@ -62,7 +62,7 @@ class PoemCanvas extends CanvasBase {
     }
 
     private get columnPadding() {
-        return (-this.wordCountPerRow + 7) / 2 + (80 - this.fontConfig.size) / 10;
+        return (-this.wordPerRow + 7) / 2 + (80 - this.fontConfig.size) / 10;
     }
 }
 

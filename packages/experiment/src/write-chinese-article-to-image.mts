@@ -20,11 +20,9 @@ type CanvasArg = (
         content: string;
         kind: 'sentence' | 'paragraph' | 'article',
     }
-    | {
+    | Pick<PoemCanvas, 'wordPerRow' | 'row'> & {
         title: string;
         content: string;
-        wordCountPerRow: PoemCanvas['wordCountPerRow'];
-        row: PoemCanvas['row'];
         kind: `poem${string}`
     }
 );
@@ -53,14 +51,14 @@ const canvasArgs: CanvasArg[] = [
     {
         title: '靜夜思',
         content: '床前明月光，疑是地上霜。舉頭望明月，低頭思故鄉。',
-        wordCountPerRow: 5,
+        wordPerRow: 5,
         row: 4,
         kind: 'poem-ng5-jin4',
     },
     {
         title: '蜀相',
         content: '丞相祠堂何處尋，錦官城外柏森森。映階碧草自春色，隔葉黃鸝空好音。三顧頻煩天下計，兩朝開濟老臣心。出師未捷身先死，長使英雄淚滿襟。',
-        wordCountPerRow: 7,
+        wordPerRow: 7,
         row: 8,
         kind: 'poem-cat1-leot6',
     },
@@ -130,7 +128,7 @@ for (const canvasArg of canvasArgs) {
                 case 'poem-ng5-jin4':
                 case 'poem-cat1-leot6':
                     return new PoemCanvas(
-                        /* wordCountPerRow */canvasArg.wordCountPerRow,
+                        /* wordPerRow */canvasArg.wordPerRow,
                         /* row */canvasArg.row,
                         /* fontFace */fontFace,
                         /* platform */'NODE',
