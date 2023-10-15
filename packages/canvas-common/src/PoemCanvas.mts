@@ -4,13 +4,13 @@ import FontConfig from './FontConfig.mjs';
 
 class PoemCanvas extends CanvasBase {
     constructor(
-        public readonly wordPerRow: 1 | 2 | 3 | 4 | 5 | 6 | 7,
-        public readonly row: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
-        fontFace: FontConfig.FontFace,
+        public readonly wordPerRow: PoemCanvas.WordPerRow,
+        public readonly row: PoemCanvas.Row,
+        private fontFace: FontConfig.FontFace,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
         content: string,
         titleText?: string,
-        options?: Record<string, unknown>,
+        private options?: Record<string, unknown>,
     ) {
         const { LINE_SPACING } = PoemCanvas;
 
@@ -64,6 +64,38 @@ class PoemCanvas extends CanvasBase {
     private get columnPadding() {
         return (-this.wordPerRow + 7) / 2 + (80 - this.fontConfig.size) / 10;
     }
+
+    move(args: Partial<{
+        wordPerRow: PoemCanvas.WordPerRow,
+        row: PoemCanvas.Row,
+        fontFace: FontConfig.FontFace,
+        platform: CanvasConfig.SUPPORTED_PLATFORM,
+        content: string,
+        titleText?: string,
+        options?: Record<string, unknown>,
+    }>): PoemCanvas {
+        Object.assign(this, args);
+
+        return new PoemCanvas(
+            args.wordPerRow || this.wordPerRow,
+            args.row || this.row,
+            args.fontFace || this.fontFace,
+            args.platform || this.platform,
+            args.content || this.content,
+            args.titleText || this.titleConfig?.text,
+            {
+                ...this.options,
+                ...args.options,
+                wordPerRow: args.wordPerRow || this.wordPerRow,
+                row: args.row || this.row,
+             }
+        );
+    }
+}
+
+namespace PoemCanvas {
+    export type WordPerRow = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    export type Row = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 }
 
 export default PoemCanvas;

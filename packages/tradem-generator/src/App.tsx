@@ -1,6 +1,6 @@
 import './App.css'
 
-import { For, Match, Switch, createEffect, createSignal, onMount } from 'solid-js'
+import { For, Match, Switch, createEffect, createSignal, onMount, on } from 'solid-js'
 import FontFaceObserver from 'fontfaceobserver';
 
 import solidLogo from './assets/solid.svg'
@@ -92,11 +92,34 @@ function makeCanvases2(canvases: HTMLCanvasElement[]) {
 
 }
 
+const canvases3Contents = {
+    78: {
+        title: '蜀相',
+        content: '丞相祠堂何處尋，錦官城外柏森森。映階碧草自春色，隔葉黃鸝空好音。三顧頻煩天下計，兩朝開濟老臣心。出師未捷身先死，長使英雄淚滿襟。'
+    },
+    54: {
+        title: '靜夜思',
+        content: '床前明月光，疑是地上霜。舉頭望明月，低頭思故鄉。',
+    }
+} as const satisfies Record<string, { title: string; content: string; }>;
+
+function makeCanvases3(canvases: PoemCanvas[]) {
+    const canvas78 = new PoemCanvas(
+        /* wordPerRow */7,
+        /* Row */8,
+        /* font */{ family: 'cwtexkai', weight: '500' },
+        /* platform */'WEB',
+        /* content */canvases3Contents[78].content,
+        /* title */canvases3Contents[78].title,
+    );
+    canvases.push(canvas78);
+}
+
 function App() {
-    const [count, setCount] = createSignal(0);
+    const [row, setRow] = createSignal<PoemCanvas.Row>(8);
     const [isPageReady, setIsPageReady] = createSignal(false);
 
-    const canvases: HTMLCanvasElement[] = [];
+    const [canvases, setCanvases] = createSignal<PoemCanvas[]>([]);
 
     onMount(async () => {
         await Promise.all([
@@ -106,7 +129,10 @@ function App() {
             new FontFaceObserver('cwtexming').load('你好世界你真美，你好世界你真美。'),
         ]);
 
-        makeCanvases2(canvases);
+        setCanvases((previous) => {
+            makeCanvases3(previous);
+            return previous;
+        })
 
         setIsPageReady(true);
     });
@@ -115,36 +141,31 @@ function App() {
         console.log('isPageReady', isPageReady());
     })
 
+    createEffect(on([row], () => {
+        if (isPageReady()) {
+            setCanvases((previous) => {
+                const { title: titleText, content } = canvases3Contents[row() === 4 ? 54 : 78];
+                const wordPerRow = row() === 4 ? 5 : 7
+
+                const newCanvas = previous[0].move({ row: row(), wordPerRow, titleText, content });
+
+                return previous.toSpliced(0, 1, newCanvas);
+            });
+        }
+    }, { defer: true }));
+
     return (
         <Switch fallback={<h2>Loading...</h2>}>
             <Match when={isPageReady()}>
-                <div>
-                    <a href='https://vitejs.dev' target='_blank'>
-                        <img src={viteLogo} class='logo' alt='Vite logo' />
-                    </a>
-                    <a href='https://solidjs.com' target='_blank'>
-                        <img src={solidLogo} class='logo solid' alt='Solid logo' />
-                    </a>
-                </div>
-                <h1>Vite + Solid</h1>
                 <div class='card'>
-                    <button onClick={() => setCount((count) => count + 1)}>
-                        count is {count()}
+                    <button onClick={() => setRow((previous) => previous === 4 ? 8 : 4)}>
+                        Switch row
                     </button>
-                    <p>
-                        Edit <code>src/App.tsx</code> and save to test HMR
-                    </p>
                 </div>
-                <p class='read-the-docs'>
-                    Click on the Vite and Solid logos to learn more
-                </p>
 
-                <For each={canvases}>
-                    {(canvas) => canvas}
+                <For each={canvases()}>
+                    {(canvas) => canvas.htmlCanvas}
                 </For>
-            </Match>
-            <Match when={!isPageReady()}>
-                <h2>Loading...</h2>
             </Match>
         </Switch>
     )
