@@ -3,10 +3,10 @@ import './App.css'
 import { For, Match, Switch, createEffect, createSignal, onMount, on } from 'solid-js'
 import FontFaceObserver from 'fontfaceobserver';
 
-import solidLogo from './assets/solid.svg'
-import viteLogo from '/vite.svg'
-
 import { PoemCanvas, SingleParagraphCanvas, FontConfig } from 'canvas-common';
+
+import solidLogo from './assets/solid.svg';
+import viteLogo from '/vite.svg';
 
 function makeCanvases1(canvases: HTMLCanvasElement[]) {
     for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
@@ -154,18 +154,44 @@ function App() {
         }
     }, { defer: true }));
 
+    let img: HTMLImageElement;
+
     return (
         <Switch fallback={<h2>Loading...</h2>}>
             <Match when={isPageReady()}>
+                <div>
+                    <a href='https://vitejs.dev' target='_blank'>
+                        <img src={viteLogo} class='logo' alt='Vite logo' />
+                    </a>
+                    <a href='https://solidjs.com' target='_blank'>
+                        <img src={solidLogo} class='logo solid' alt='Solid logo' />
+                    </a>
+                </div>
                 <div class='card'>
                     <button onClick={() => setRow((previous) => previous === 4 ? 8 : 4)}>
                         Switch row
                     </button>
+                    <button onClick={() => {
+                        const link = document.createElement('a');
+                        link.download = 'filename.png';
+                        link.href = img.src;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }}>
+                        Download
+                    </button>
                 </div>
 
-                <For each={canvases()}>
+                {/* <For each={canvases()}>
                     {(canvas) => canvas.htmlCanvas}
-                </For>
+                </For> */}
+                <img
+                    src={canvases()[0].htmlCanvas.toDataURL()}
+                    width={350}
+                    height={350}
+                    ref={(ref) => { img = ref; }}
+                />
             </Match>
         </Switch>
     )
