@@ -145,7 +145,7 @@ function App() {
         if (isPageReady()) {
             setCanvases((previous) => {
                 const { title: titleText, content } = canvases3Contents[row() === 4 ? 54 : 78];
-                const wordPerRow = row() === 4 ? 5 : 7
+                const wordPerRow = row() === 4 ? 5 : 7;
 
                 const newCanvas = previous[0].move({ row: row(), wordPerRow, titleText, content });
 

@@ -18,7 +18,7 @@ class PoemCanvas extends CanvasBase {
         const scaledPaddingTopOffset = (LINE_SPACING / 2) * paddingTopOffset;
         const paddingTop = 1.375 + scaledPaddingTopOffset;
 
-        const fontSize = row <= 4 ? 80 : 50;
+        const fontSize = (row <= 4 ? CanvasConfig.SIZE / 10 : CanvasConfig.SIZE / 16) as CanvasConfig.FontSize;
         const fontConfig = new FontConfig(fontSize, fontFace);
 
         const titleConfig: CanvasBase.TitleConfig | undefined = (
@@ -62,7 +62,7 @@ class PoemCanvas extends CanvasBase {
     }
 
     private get columnPadding() {
-        return (-this.wordPerRow + 7) / 2 + (80 - this.fontConfig.size) / 10;
+        return (-this.wordPerRow + 7) / 2 + (CanvasConfig.SIZE / 10 - this.fontConfig.size) / (CanvasConfig.SIZE / 80);
     }
 
     move(args: Partial<{
