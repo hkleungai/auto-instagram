@@ -1,19 +1,19 @@
 import './App.css'
 
-import { For, Match, Switch, createEffect, createSignal, onMount, on } from 'solid-js'
+import { Match, Switch, createEffect, createSignal, onMount, on } from 'solid-js'
 import FontFaceObserver from 'fontfaceobserver';
 
-import { PoemCanvas, SingleParagraphCanvas, FontConfig } from 'canvas-common';
+import { PoemCanvas, SingleParagraphCanvas, type FontConfig } from 'canvas-common';
 
 import solidLogo from './assets/solid.svg';
 import viteLogo from '/vite.svg';
 
 function makeCanvases1(canvases: HTMLCanvasElement[]) {
     for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
-        const fontConfig = new FontConfig(
-            /* size */fontSize,
-            /* fontFace */{ family: 'cwTeXKai' },
-        );
+        const fontConfig: FontConfig = {
+            fontSize,
+            fontFace: { family: 'cwTeXKai' },
+        };
 
         const contents: Record<string, { title: string; content: string; }> = {
             short: {

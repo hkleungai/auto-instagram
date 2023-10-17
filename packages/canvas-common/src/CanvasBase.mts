@@ -7,7 +7,7 @@ import {
 } from 'canvas';
 
 import CanvasConfig from './CanvasConfig.mjs';
-import FontConfig from './FontConfig.mjs';
+import type FontConfig from './FontConfig.mjs';
 import Bug from './Bug.mjs';
 
 abstract class CanvasBase {
@@ -48,6 +48,7 @@ abstract class CanvasBase {
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
         protected readonly content: string,
         protected readonly paddingTop: number,
+        protected readonly lineSpacing: number,
         protected readonly titleConfig?: CanvasBase.TitleConfig,
         options?: Record<string, unknown>,
     ) {
@@ -62,8 +63,8 @@ abstract class CanvasBase {
     }
 
     private getNodeCanvasContext(): NodeCanvasContext {
-        if (!!registerFont && this.fontConfig.path && this.fontConfig.fontFace) {
-            registerFont(this.fontConfig.path, this.fontConfig.fontFace);
+        if (!!registerFont && this.fontConfig.fontFilePath && this.fontConfig.fontFace) {
+            registerFont(this.fontConfig.fontFilePath, this.fontConfig.fontFace);
         }
 
         const result = this.nodeCanvas.getContext('2d');
@@ -73,7 +74,7 @@ abstract class CanvasBase {
         result.font = [
             this.fontConfig.fontFace.style,
             this.fontConfig.fontFace.weight,
-            `${this.fontConfig.size}px`,
+            `${this.fontConfig.fontSize}px`,
             this.fontConfig.fontFace.family,
         ]
             .filter(Boolean)
@@ -95,7 +96,7 @@ abstract class CanvasBase {
             return;
         }
 
-        const { size: fontSize } = this.fontConfig;
+        const { fontSize: fontSize } = this.fontConfig;
         const { text, startX } = this.titleConfig;
 
         const underlineStartX = startX - text.length * fontSize / 2;
@@ -119,8 +120,20 @@ abstract class CanvasBase {
     }
 
     protected get scaledPaddingTop() {
-        return this.paddingTop * this.fontConfig.size;
+        return this.paddingTop * this.fontConfig.fontSize;
     }
+
+    protected get maxRow() {
+        const {
+            fontConfig: { fontSize },
+            lineSpacing,
+            paddingTop,
+        } = this;
+
+        return Math.floor((CanvasConfig.SIZE - fontSize * paddingTop) / (fontSize * lineSpacing));
+    }
+
+    protected abstract get maxColumn(): number;
 }
 
 namespace CanvasBase {

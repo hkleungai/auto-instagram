@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-import { ArticleCanvas, SingleParagraphCanvas, FontConfig, PoemCanvas } from "canvas-common";
+import { ArticleCanvas, SingleParagraphCanvas, type FontConfig, PoemCanvas } from "canvas-common";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,11 +65,11 @@ const canvasArgs: CanvasArg[] = [
 ];
 
 for (const fontSize of fontSizes) {
-    const fontConfig = new FontConfig(
-        /* size */fontSize,
-        /* fontFace */{ family: 'cwtexkai' },
-        /* path */'../../assets/cwTeXKai-zhonly.ttf',
-    );
+    const fontConfig: FontConfig = {
+        fontSize,
+        fontFace: { family: 'cwtexkai' },
+        fontFilePath: '../../assets/cwTeXKai-zhonly.ttf',
+    };
 
     for (const canvasArg of canvasArgs) {
         const fileNames = [

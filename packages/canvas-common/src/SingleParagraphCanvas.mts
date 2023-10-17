@@ -1,6 +1,6 @@
 import CanvasBase from './CanvasBase.mts';
 import CanvasConfig from './CanvasConfig.mjs';
-import FontConfig from './FontConfig.mjs';
+import type FontConfig from './FontConfig.mjs';
 
 class SingleParagraphCanvas extends CanvasBase {
     constructor(
@@ -12,6 +12,8 @@ class SingleParagraphCanvas extends CanvasBase {
     ) {
         const paddingTop = 1.375;
 
+        const lineSpacing = 1.25;
+
         const titleConfig: CanvasBase.TitleConfig | undefined = (
             titleText
                 ? {
@@ -21,32 +23,31 @@ class SingleParagraphCanvas extends CanvasBase {
                 : undefined
         );
 
-        super(fontConfig, platform, content, paddingTop, titleConfig, options);
+        super(fontConfig, platform, content, paddingTop, lineSpacing, titleConfig, options);
     }
 
     protected fillContent(lineCount = this.titleTextAsNumber, content = this.content) {
-        const { BEGIN_PADDING_SIZE, LINE_SPACING, TRAILING_ELLIPSIS } = SingleParagraphCanvas;
-        const { size: fontSize, maxRow, maxColumn } = this.fontConfig;
+        const { PARAGRAPH_PADDING, TRAILING_ELLIPSIS } = SingleParagraphCanvas;
 
         for (
             let charPointer = 0;
-            charPointer < content.length && lineCount < maxRow;
+            charPointer < content.length && lineCount < this.maxRow;
             lineCount++
         ) {
-            const columnOffset = charPointer == 0 ? BEGIN_PADDING_SIZE : 0;
-            const newCharPointer = charPointer + maxColumn - columnOffset;
-            const hasLongContentAtLastRow = lineCount + 1 === maxRow && newCharPointer < content.length;
+            const columnOffset = charPointer == 0 ? PARAGRAPH_PADDING : 0;
+            const newCharPointer = charPointer + this.maxColumn - columnOffset;
+            const hasLongContentAtLastRow = lineCount + 1 === this.maxRow && newCharPointer < content.length;
 
             const lineStart = charPointer;
             const lineEnd = newCharPointer - (hasLongContentAtLastRow ? TRAILING_ELLIPSIS.length : 0);
             const lineSuffix = hasLongContentAtLastRow ? TRAILING_ELLIPSIS : '';
             const line = content.slice(lineStart, lineEnd).concat(lineSuffix);
 
-            const scaledLineSpacing = fontSize * LINE_SPACING;
+            const scaledLineSpacing = this.fontConfig.fontSize * this.lineSpacing;
             const startY = lineCount * scaledLineSpacing + this.scaledPaddingTop;
 
             for (let i = 0; i < line.length; i++) {
-                const startX = (i + columnOffset) * fontSize + scaledLineSpacing;
+                const startX = (i + columnOffset) * this.fontConfig.fontSize + scaledLineSpacing;
                 this.nodeCanvasContext.fillText(line[i], startX, startY);
             }
 
@@ -58,12 +59,12 @@ class SingleParagraphCanvas extends CanvasBase {
         return '。。。';
     }
 
-    protected static get BEGIN_PADDING_SIZE() {
+    protected static get PARAGRAPH_PADDING() {
         return 2;
     }
 
-    protected static get LINE_SPACING() {
-        return 1.25;
+    protected get maxColumn() {
+        return CanvasConfig.SIZE / this.fontConfig.fontSize - SingleParagraphCanvas.PARAGRAPH_PADDING;
     }
 }
 

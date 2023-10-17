@@ -1,6 +1,6 @@
 import CanvasBase from './CanvasBase.mts';
 import CanvasConfig from './CanvasConfig.mjs';
-import FontConfig from './FontConfig.mjs';
+import type FontConfig from './FontConfig.mjs';
 
 class PoemCanvas extends CanvasBase {
     constructor(
@@ -12,14 +12,16 @@ class PoemCanvas extends CanvasBase {
         titleText?: string,
         private options?: Record<string, unknown>,
     ) {
-        const { LINE_SPACING } = PoemCanvas;
+        const fontConfig: FontConfig = {
+            fontSize: row <= 4 ? CanvasConfig.SIZE / 10 : CanvasConfig.SIZE / 16,
+            fontFace,
+        };
 
         const paddingTopOffset = (row <= 4 ? 4 : 8) - row + Number(!titleText);
-        const scaledPaddingTopOffset = (LINE_SPACING / 2) * paddingTopOffset;
+        const scaledPaddingTopOffset = (1.5 / 2) * paddingTopOffset;
         const paddingTop = 1.375 + scaledPaddingTopOffset;
 
-        const fontSize = (row <= 4 ? CanvasConfig.SIZE / 10 : CanvasConfig.SIZE / 16) as CanvasConfig.FontSize;
-        const fontConfig = new FontConfig(fontSize, fontFace);
+        const lineSpacing = 1.5;
 
         const titleConfig: CanvasBase.TitleConfig | undefined = (
             titleText
@@ -30,13 +32,10 @@ class PoemCanvas extends CanvasBase {
                 : undefined
         );
 
-        super(fontConfig, platform, content, paddingTop, titleConfig, { ...options, wordPerRow, row });
+        super(fontConfig, platform, content, paddingTop, lineSpacing, titleConfig, { ...options, wordPerRow, row });
     }
 
     protected fillContent() {
-        const { LINE_SPACING } = PoemCanvas;
-        const { size: fontSize } = this.fontConfig;
-
         for (
             let charPointer = 0, lineCount = this.titleTextAsNumber;
             lineCount - this.titleTextAsNumber < this.row;
@@ -45,11 +44,11 @@ class PoemCanvas extends CanvasBase {
             const newCharPointer = charPointer + this.wordPerRow + 1;
             const line = this.content.slice(charPointer, newCharPointer);
 
-            const scaledLineSpacing = fontSize * LINE_SPACING;
+            const scaledLineSpacing = this.fontConfig.fontSize * this.lineSpacing;
             const startY = lineCount * scaledLineSpacing + this.scaledPaddingTop;
 
             for (let i = 0; i < line.length; i++) {
-                const startX = (i + this.columnPadding) * fontSize + scaledLineSpacing;
+                const startX = (i + this.columnPadding) * this.fontConfig.fontSize + scaledLineSpacing;
                 this.nodeCanvasContext.fillText(line[i], startX, startY);
             }
 
@@ -57,12 +56,8 @@ class PoemCanvas extends CanvasBase {
         }
     }
 
-    protected static get LINE_SPACING() {
-        return 1.5;
-    }
-
     private get columnPadding() {
-        return (-this.wordPerRow + 7) / 2 + (CanvasConfig.SIZE / 10 - this.fontConfig.size) / (CanvasConfig.SIZE / 80);
+        return (-this.wordPerRow + 7) / 2 + (CanvasConfig.SIZE / 10 - this.fontConfig.fontSize) / (CanvasConfig.SIZE / 80);
     }
 
     move(args: Partial<{
@@ -90,6 +85,10 @@ class PoemCanvas extends CanvasBase {
                 row: args.row || this.row,
              }
         );
+    }
+
+    protected get maxColumn() {
+        return CanvasConfig.SIZE / this.fontConfig.fontSize;
     }
 }
 
