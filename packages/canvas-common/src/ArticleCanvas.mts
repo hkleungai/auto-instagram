@@ -14,7 +14,7 @@ class ArticleCanvas extends SingleParagraphCanvas {
         super(fontConfig, platform, paragraphs, titleText, { paragraphSeparator, ...options });
     }
 
-    protected fillContent() {
+    protected renderContent() {
         const { PARAGRAPH_PADDING } = SingleParagraphCanvas;
 
         const contentSegments = this.content.split(this.paragraphSeparator);
@@ -22,7 +22,7 @@ class ArticleCanvas extends SingleParagraphCanvas {
         let usedRowCount = this.titleTextAsNumber;
 
         for (const contentSegment of contentSegments) {
-            super.fillContent(usedRowCount, contentSegment);
+            super.renderContent(usedRowCount, contentSegment);
             usedRowCount += Math.ceil((contentSegment.length + PARAGRAPH_PADDING) / this.maxColumn);
         }
     }

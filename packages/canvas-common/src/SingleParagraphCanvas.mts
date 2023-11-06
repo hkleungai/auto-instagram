@@ -26,7 +26,7 @@ class SingleParagraphCanvas extends CanvasBase {
         super(fontConfig, platform, content, paddingTop, lineSpacing, titleConfig, options);
     }
 
-    protected fillContent(lineCount = this.titleTextAsNumber, content = this.content) {
+    protected renderContent(lineCount = this.titleTextAsNumber, content = this.content) {
         const { PARAGRAPH_PADDING, TRAILING_ELLIPSIS } = SingleParagraphCanvas;
 
         for (

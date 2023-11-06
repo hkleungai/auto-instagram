@@ -1,27 +1,127 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+
+    --field-padding: 8px;
+    --field-border: 1px;
+    --field-height: 36px;
+    --border-radius: 4px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.solid:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+div.creator-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.card {
-  padding: 2em;
+form.creator-form-container {
+    display: block;
+    border-radius: var(--border-radius);
+    padding-top: 20px;
+    padding-bottom: 16px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-width: 0.5px;
+    border-color: #eeeeee;
+    border-style: solid;
+    min-width: 350px;
 }
 
-.read-the-docs {
-  color: #888;
+form.creator-form-container div.creator-form-rows {
+    display: flex;
+    gap: 18px;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-group div.creator-form-row {
+    min-width: calc(50% - 10px);
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row.creator-form-buttons {
+    flex-direction: row;
+    align-self: end;
+    justify-content: space-around;
+    height: 40px;
+    width: 100%;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row.creator-poem-image {
+    display: flex;
+    place-items: center;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row input[type=text],
+form.creator-form-container div.creator-form-rows div.creator-form-row select,
+form.creator-form-container div.creator-form-rows div.creator-form-row textarea {
+    padding: var(--field-padding);
+    border: var(--field-border) solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    color: inherit;
+    background-color: #3b3b3b;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row input[type=text] {
+    height: calc(var(--field-height) - 2 * (var(--field-padding) + var(--field-border)));
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row select {
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 50%;
+    height: var(--field-height);
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row textarea {
+    height: auto;
+    width: calc(16 * 16px + 2 * (var(--field-padding) + var(--field-border)));
+    font-family: monospace;
+    text-rendering: auto;
+    box-sizing: border-box;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row label {
+    display: inline-block;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row input[type=submit] {
+    background-color: #747bff;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+}
+form.creator-form-container div.creator-form-rows div.creator-form-row input[type=submit][data-disabled=true] {
+    color: #fff;
+    background-color: #a0a0a0;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row input[type=submit]:hover:not[data-disabled=true] {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+form.creator-form-container div.creator-form-rows div.creator-form-row input[type=submit]:hover[data-disabled=true] {
+    cursor: not-allowed;
 }

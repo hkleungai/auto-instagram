@@ -6,10 +6,10 @@ class PoemCanvas extends CanvasBase {
     constructor(
         public readonly wordPerRow: PoemCanvas.WordPerRow,
         public readonly row: PoemCanvas.Row,
-        private fontFace: FontConfig.FontFace,
+        public readonly fontFace: FontConfig.FontFace,
         protected readonly platform: CanvasConfig.SUPPORTED_PLATFORM,
-        content: string,
-        titleText?: string,
+        public readonly content: string,
+        public readonly titleText?: string,
         private options?: Record<string, unknown>,
     ) {
         const fontConfig: FontConfig = {
@@ -35,7 +35,7 @@ class PoemCanvas extends CanvasBase {
         super(fontConfig, platform, content, paddingTop, lineSpacing, titleConfig, { ...options, wordPerRow, row });
     }
 
-    protected fillContent() {
+    protected renderContent() {
         for (
             let charPointer = 0, lineCount = this.titleTextAsNumber;
             lineCount - this.titleTextAsNumber < this.row;
@@ -72,17 +72,17 @@ class PoemCanvas extends CanvasBase {
         Object.assign(this, args);
 
         return new PoemCanvas(
-            args.wordPerRow || this.wordPerRow,
-            args.row || this.row,
-            args.fontFace || this.fontFace,
-            args.platform || this.platform,
-            args.content || this.content,
-            args.titleText || this.titleConfig?.text,
+            args.wordPerRow ?? this.wordPerRow,
+            args.row ?? this.row,
+            args.fontFace ?? this.fontFace,
+            args.platform ?? this.platform,
+            args.content ?? this.content,
+            args.titleText ?? this.titleConfig?.text,
             {
                 ...this.options,
                 ...args.options,
-                wordPerRow: args.wordPerRow || this.wordPerRow,
-                row: args.row || this.row,
+                wordPerRow: args.wordPerRow ?? this.wordPerRow,
+                row: args.row ?? this.row,
              }
         );
     }

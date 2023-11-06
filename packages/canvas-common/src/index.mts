@@ -1,17 +1,15 @@
 import ArticleCanvas from './ArticleCanvas.mjs';
-import Bug from './Bug.mjs';
+import C from './C.mts';
 import SingleParagraphCanvas from './SingleParagraphCanvas.mjs';
 import CanvasConfig from './CanvasConfig.mjs';
 import type FontConfig from './FontConfig.mjs';
-import MaybeLookup from './MaybeLookup.mjs';
 import PoemCanvas from './PoemCanvas.mts';
 
 export {
     ArticleCanvas,
-    Bug,
+    C,
     SingleParagraphCanvas,
     CanvasConfig,
     type FontConfig,
-    MaybeLookup,
     PoemCanvas,
 };

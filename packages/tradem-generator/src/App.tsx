@@ -1,13 +1,16 @@
 import './App.css'
 
-import { Match, Switch, createEffect, createSignal, onMount, on } from 'solid-js'
 import FontFaceObserver from 'fontfaceobserver';
+import { Match, Switch, createSignal, For, createResource, JSX } from 'solid-js'
 
-import { PoemCanvas, SingleParagraphCanvas, type FontConfig } from 'canvas-common';
+import {
+    C,
+    PoemCanvas,
+    SingleParagraphCanvas,
+    type FontConfig,
+} from 'canvas-common';
 
-import solidLogo from './assets/solid.svg';
-import viteLogo from '/vite.svg';
-
+// @ts-ignore
 function makeCanvases1(canvases: HTMLCanvasElement[]) {
     for (const fontSize of [20, 25, 32, 40, 50, 80] as const) {
         const fontConfig: FontConfig = {
@@ -50,6 +53,7 @@ function makeCanvases1(canvases: HTMLCanvasElement[]) {
 
 }
 
+// @ts-ignore
 function makeCanvases2(canvases: HTMLCanvasElement[]) {
     const contents = {
         54: {
@@ -72,7 +76,7 @@ function makeCanvases2(canvases: HTMLCanvasElement[]) {
         const canvas54 = new PoemCanvas(
             /* wordPerRow */5,
             /* Row */4,
-            /* font */{ family, weight: '500' },
+            /* font */{ family, weight: '300' },
             /* platform */'WEB',
             /* content */contents[54].content,
             /* title */contents[54].title,
@@ -82,7 +86,7 @@ function makeCanvases2(canvases: HTMLCanvasElement[]) {
         const canvas78 = new PoemCanvas(
             /* wordPerRow */7,
             /* Row */8,
-            /* font */{ family, weight: '500' },
+            /* font */{ family, weight: '300' },
             /* platform */'WEB',
             /* content */contents[78].content,
             /* title */contents[78].title,
@@ -92,109 +96,247 @@ function makeCanvases2(canvases: HTMLCanvasElement[]) {
 
 }
 
-const canvases3Contents = {
-    78: {
-        title: '蜀相',
-        content: '丞相祠堂何處尋，錦官城外柏森森。映階碧草自春色，隔葉黃鸝空好音。三顧頻煩天下計，兩朝開濟老臣心。出師未捷身先死，長使英雄淚滿襟。'
-    },
-    54: {
-        title: '靜夜思',
-        content: '床前明月光，疑是地上霜。舉頭望明月，低頭思故鄉。',
-    }
-} as const satisfies Record<string, { title: string; content: string; }>;
-
-function makeCanvases3(canvases: PoemCanvas[]) {
-    const canvas78 = new PoemCanvas(
+// @ts-ignore
+function makeInitialCanvas() {
+    return new PoemCanvas(
         /* wordPerRow */7,
         /* Row */8,
-        /* font */{ family: 'cwtexkai', weight: '500' },
+        /* font */{ family: 'cwtexkai', weight: '300' },
         /* platform */'WEB',
-        /* content */canvases3Contents[78].content,
-        /* title */canvases3Contents[78].title,
+        /* content */'丞相祠堂何處尋，錦官城外柏森森。映階碧草自春色，隔葉黃鸝空好音。三顧頻煩天下計，兩朝開濟老臣心。出師未捷身先死，長使英雄淚滿襟。',
+        /* title */'蜀相',
     );
-    canvases.push(canvas78);
+    // canvases.push(canvas78);
 }
 
 function App() {
-    const [row, setRow] = createSignal<PoemCanvas.Row>(8);
-    const [isPageReady, setIsPageReady] = createSignal(false);
+    const FONT_FAMILY_TO_LABEL_LOOKUP = {
+        cwtexkai: '楷體',
+        cwtexyen: '圓體',
+        cwtexfangsong: '仿宋體',
+        cwtexming: '明體',
+    } as const;
 
-    const [canvases, setCanvases] = createSignal<PoemCanvas[]>([]);
-
-    onMount(async () => {
-        await Promise.all([
-            new FontFaceObserver('cwtexkai').load('你好世界你真美，你好世界你真美。'),
-            new FontFaceObserver('cwtexyen').load('你好世界你真美，你好世界你真美。'),
-            new FontFaceObserver('cwtexfangsong').load('你好世界你真美，你好世界你真美。'),
-            new FontFaceObserver('cwtexming').load('你好世界你真美，你好世界你真美。'),
-        ]);
-
-        setCanvases((previous) => {
-            makeCanvases3(previous);
-            return previous;
-        })
-
-        setIsPageReady(true);
+    const [fontState] = createResource(async () => {
+        try {
+            await Promise.all((
+                Object.keys(FONT_FAMILY_TO_LABEL_LOOKUP).map(async (fontFamily) => (
+                    new FontFaceObserver(fontFamily).load('你好世界你真美，你好世界你真美。', 10 * 1000)
+                ))
+            ));
+        }
+        catch (error) {
+            alert(error);
+        }
     });
 
-    createEffect(() => {
-        console.log('isPageReady', isPageReady());
-    })
+    const initCanvas = () => {
+        C.assert(fontState.state === 'ready', 'Unreachable non-ready font-state');
 
-    createEffect(on([row], () => {
-        if (isPageReady()) {
-            setCanvases((previous) => {
-                const { title: titleText, content } = canvases3Contents[row() === 4 ? 54 : 78];
-                const wordPerRow = row() === 4 ? 5 : 7;
-
-                const newCanvas = previous[0].move({ row: row(), wordPerRow, titleText, content });
-
-                return previous.toSpliced(0, 1, newCanvas);
-            });
-        }
-    }, { defer: true }));
-
-    let img: HTMLImageElement;
+        return new PoemCanvas(
+            /* wordPerRow */7,
+            /* Row */8,
+            /* font */{ family: 'cwtexkai', weight: '300' },
+            /* platform */'WEB',
+            /* content */'丞相祠堂何處尋，錦官城外柏森森。映階碧草自春色，隔葉黃鸝空好音。三顧頻煩天下計，兩朝開濟老臣心。出師未捷身先死，長使英雄淚滿襟。',
+            /* title */'蜀相',
+        );
+    };
 
     return (
         <Switch fallback={<h2>Loading...</h2>}>
-            <Match when={isPageReady()}>
-                <div>
-                    <a href='https://vitejs.dev' target='_blank'>
-                        <img src={viteLogo} class='logo' alt='Vite logo' />
-                    </a>
-                    <a href='https://solidjs.com' target='_blank'>
-                        <img src={solidLogo} class='logo solid' alt='Solid logo' />
-                    </a>
-                </div>
-                <div class='card'>
-                    <button onClick={() => setRow((previous) => previous === 4 ? 8 : 4)}>
-                        Switch row
-                    </button>
-                    <button onClick={() => {
-                        const link = document.createElement('a');
-                        link.download = 'filename.png';
-                        link.href = img.src;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    }}>
-                        Download
-                    </button>
-                </div>
-
-                {/* <For each={canvases()}>
-                    {(canvas) => canvas.htmlCanvas}
-                </For> */}
-                <img
-                    src={canvases()[0].htmlCanvas.toDataURL()}
-                    width={350}
-                    height={350}
-                    ref={(ref) => { img = ref; }}
+            <Match when={fontState.state === 'ready'}>
+                <CanvasMaker
+                    initedCanvas={initCanvas()}
+                    fontFamilyToLabelLookup={FONT_FAMILY_TO_LABEL_LOOKUP}
                 />
+            </Match>
+            <Match when={fontState.state === 'errored'}>
+                <h2>Error!!</h2>
             </Match>
         </Switch>
     )
 }
 
-export default App
+function CanvasMaker(props: { initedCanvas: PoemCanvas, fontFamilyToLabelLookup: Record<string, string> }) {
+    const [canvas, setCanvas] = createSignal(props.initedCanvas);
+
+    const onPoemTitleInput: JSX.CustomEventHandlersCamelCase<HTMLInputElement>['onInput'] = (event) => {
+        setCanvas((previous) => previous.move({ titleText: event.target.value }));
+    };
+
+    const onPoemContentInput: JSX.CustomEventHandlersCamelCase<HTMLTextAreaElement>['onInput'] = (event) => {
+        setCanvas((previous) => previous.move({ content: event.target.value }));
+    };
+
+    const poemContentDisplay = () => {
+        const { content, wordPerRow } = canvas();
+        const column = wordPerRow + 1;
+
+        const chunks: string[] = [];
+
+        for (let i = 0; i < content.length; i += column * 2) {
+            chunks.push(content.slice(i, i + column * 2));
+        }
+
+        return chunks.join('\n');
+    };
+
+
+    const onPoemRowCountInput: JSX.CustomEventHandlersCamelCase<HTMLSelectElement>['onInput'] = (event) => {
+        const verifyRow = (row: number): row is PoemCanvas.Row => (
+            Number.isSafeInteger(row) && row >= 1 && row <= 8
+        );
+
+        setCanvas((previous) => {
+            const newRow = Number(event.target.value);
+
+            C.assert(verifyRow(newRow), 'Invalid value for `row`');
+
+            return previous.move({ row: newRow });
+        });
+    };
+
+
+    const onPoemColumnCountInput: JSX.CustomEventHandlersCamelCase<HTMLSelectElement>['onInput'] = (event) => {
+        const verifyColumn = (row: number): row is PoemCanvas.WordPerRow => (
+            Number.isSafeInteger(row) && row >= 1 && row <= 7
+        );
+
+        setCanvas((previous) => {
+            const newColumn = Number(event.target.value);
+
+            C.assert(verifyColumn(newColumn), 'Invalid value for `column`');
+
+            return previous.move({ wordPerRow: newColumn });
+        });
+    };
+
+    const onPoemFontFamilyInput: JSX.CustomEventHandlersCamelCase<HTMLSelectElement>['onInput'] = (event) => {
+        setCanvas((previous) => {
+            const newFontFamily = event.target.value;
+
+            C.assert(
+                Object.prototype.hasOwnProperty.call(props.fontFamilyToLabelLookup, newFontFamily),
+                'Invalid value for `font-family`',
+            );
+
+            return previous.move({ fontFace: { family: newFontFamily, weight: '300' }, });
+        });
+    };
+
+    return (
+        <>
+            <div class="creator-rows">
+                <h3>古詩創作家／TradEM Creator</h3>
+            </div>
+            <div class="creator-rows">
+                <div class="creator-row creator-poem-image">
+                    <img
+                        src={canvas()?.htmlCanvas?.toDataURL()}
+                        width={350}
+                        height={350}
+                        title="poem-canvas"
+                    />
+                </div>
+
+                <form class="creator-row creator-form-container" onSubmit={(event) => { event.preventDefault() }}>
+                    <div class="creator-form-rows">
+                        <div class="creator-form-group">
+                            <div class="creator-form-row">
+                                <label for="poemTitle">
+                                    標題
+                                </label>
+                                <input
+                                    type="text"
+                                    id="poemTitle"
+                                    name="firstname"
+                                    placeholder="標題。。。"
+                                    onInput={onPoemTitleInput}
+                                    value={canvas().titleText}
+                                />
+                            </div>
+                            <div class="creator-form-row">
+                                <label for="poemFontFamily">
+                                    字體
+                                </label>
+                                <select
+                                    id="poemFontFamily"
+                                    name="poemFontFamily"
+                                    onInput={onPoemFontFamilyInput}
+                                    value={canvas().fontFace.family}
+                                >
+                                    <For each={Object.keys(props.fontFamilyToLabelLookup)}>
+                                        {(fontFamily) => (
+                                            <option value={fontFamily}>
+                                                {props.fontFamilyToLabelLookup[fontFamily]}
+                                            </option>
+                                        )}
+                                    </For>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="creator-form-group">
+                            <div class="creator-form-row">
+                                <label for="poemRowCount">
+                                    橫行行數
+                                </label>
+                                <select
+                                    id="poemRowCount"
+                                    name="poemRowCount"
+                                    onInput={onPoemRowCountInput}
+                                    value={canvas().row}
+                                >
+                                    <For each={Array(8).fill(0).map((_, i) => i + 1)}>
+                                        {(value) => (
+                                            <option value={value}>{value}</option>
+                                        )}
+                                    </For>
+                                </select>
+                            </div>
+                            <div class="creator-form-row">
+                                <label for="poemColumnCount">
+                                    直行字數
+                                </label>
+                                <select
+                                    id="poemColumnCount"
+                                    name="poemColumnCount"
+                                    onInput={onPoemColumnCountInput}
+                                    value={canvas().wordPerRow}
+                                >
+                                    <For each={Array(7).fill(0).map((_, i) => i + 1)}>
+                                        {(value) => (
+                                            <option value={value}>{value}</option>
+                                        )}
+                                    </For>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="creator-form-row">
+                            <label for="poemContent">
+                                內文
+                            </label>
+                            <textarea
+                                id="poemContent"
+                                name="poemContent"
+                                placeholder="內文。。。"
+                                onInput={onPoemContentInput}
+                                value={canvas().content}
+                                rows={5}
+                                cols={16}
+                            />
+                        </div>
+
+                        <div class="creator-form-row creator-form-buttons">
+                            <input type="submit" value="下載" data-disabled={true} />
+                            <input type="submit" value="分享" data-disabled={true} />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </>
+    )
+}
+
+export default App;

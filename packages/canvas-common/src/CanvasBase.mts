@@ -8,35 +8,33 @@ import {
 
 import CanvasConfig from './CanvasConfig.mjs';
 import type FontConfig from './FontConfig.mjs';
-import Bug from './Bug.mjs';
+import C from './C.mjs';
 
 abstract class CanvasBase {
     /* TO BE IMPLEMENTED */
-    protected abstract fillContent(): void;
+    protected abstract renderContent(): void;
 
     /* PUBLIC API */
     public get htmlCanvas(): HTMLCanvasElement {
-        if (this.nodeCanvas instanceof HTMLCanvasElement) {
-            return this.nodeCanvas;
-        }
-
-        throw new Bug(
-            'canvas in "node-canvas" package is no longer an `HTMLCanvasElement`',
-            { __scope: 'canvas-base--get-html-canvas' }
+        C.assert(
+            this.platform === 'WEB',
+            'html canvas should not appear in non-web enviroment`',
         );
+
+        C.assert(
+            this.nodeCanvas instanceof HTMLCanvasElement,
+            'canvas in "node-canvas" package is no longer an `HTMLCanvasElement`',
+        );
+
+        return this.nodeCanvas;
     }
     public toJpegBuffer(): Buffer {
-        switch (this.platform) {
-            case 'NODE': {
-                return this.nodeCanvas.toBuffer('image/jpeg');
-            }
-            default: {
-                throw new Bug(
-                    /* message */`Unsupported operation for platform = ${this.platform}`,
-                    { __scope: 'canvas-base--to-jpeg-buffer' }
-                );
-            }
-        }
+        C.assert(
+            this.platform === 'NODE',
+            `Unsupported to-jpeg-buffer operation for platform = ${this.platform}`,
+        );
+
+        return this.nodeCanvas.toBuffer('image/jpeg');;
     }
 
     /* PRIVATE PART THAT NOBODY SHOULD SEE :) */
@@ -59,7 +57,7 @@ abstract class CanvasBase {
 
         this.nodeCanvasContext = this.getNodeCanvasContext();
 
-        this.fillCanvas();
+        this.render();
     }
 
     private getNodeCanvasContext(): NodeCanvasContext {
@@ -86,12 +84,12 @@ abstract class CanvasBase {
         return result;
     }
 
-    private fillCanvas() {
-        this.fillTitle();
-        this.fillContent();
+    private render() {
+        this.renderTitle();
+        this.renderContent();
     }
 
-    private fillTitle(): void {
+    private renderTitle(): void {
         if (!this.titleConfig) {
             return;
         }
@@ -138,8 +136,8 @@ abstract class CanvasBase {
 
 namespace CanvasBase {
     export interface TitleConfig {
-        text: string;
-        startX: number;
+        readonly text: string;
+        readonly startX: number;
     }
 }
 
