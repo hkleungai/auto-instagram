@@ -1,4 +1,4 @@
-import { MaybeLookup } from "canvas-common";
+import { MaybeLookup } from "tradem-common";
 
 const lookup = new MaybeLookup<Record<string, string>>(
     { 'KEY_1': 'VAL_1', 'KEY_2': 'VAL_2' },

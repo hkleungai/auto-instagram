@@ -1,5 +1,5 @@
 {
-    "name": "tradem-generator",
+    "name": "tradem-creator",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -9,7 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "canvas-common": "link:../canvas-common",
+        "tradem-common": "link:../tradem-common",
         "fontfaceobserver": "^2.3.0",
         "solid-js": "^1.7.8"
     },

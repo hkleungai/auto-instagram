@@ -8,7 +8,7 @@ import {
     PoemCanvas,
     SingleParagraphCanvas,
     type FontConfig,
-} from 'canvas-common';
+} from 'tradem-common';
 
 // @ts-ignore
 function makeCanvases1(canvases: HTMLCanvasElement[]) {

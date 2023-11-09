@@ -1,5 +1,5 @@
 {
-    "name": "experiment",
+    "name": "tradem-experiment",
     "main": "index.js",
     "license": "MIT",
     "devDependencies": {
@@ -8,7 +8,8 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "canvas-common": "link:../canvas-common"
+        "instagram-private-api": "^1.45.3",
+        "tradem-common": "link:../tradem-common"
     },
     "scripts": {
         "dev": "node --no-warnings=ExperimentalWarning --loader=tsx",
