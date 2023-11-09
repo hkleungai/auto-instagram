@@ -169,6 +169,7 @@ function CanvasMaker(props: { initedCanvas: PoemCanvas, fontFamilyToLabelLookup:
         setCanvas((previous) => previous.move({ content: event.target.value }));
     };
 
+    // @ts-ignore
     const poemContentDisplay = () => {
         const { content, wordPerRow } = canvas();
         const column = wordPerRow + 1;
