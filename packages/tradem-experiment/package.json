@@ -1,6 +1,7 @@
 {
     "name": "tradem-experiment",
     "main": "index.js",
+    "version": "0.0.0",
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^20.5.9",
@@ -12,7 +13,7 @@
         "tradem-common": "link:../tradem-common"
     },
     "scripts": {
-        "dev": "node --no-warnings=ExperimentalWarning --loader=tsx",
+        "dev": "node --import=tsx",
         "watch": "yarn dev --watch"
     }
 }

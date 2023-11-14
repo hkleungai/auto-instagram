@@ -21,17 +21,11 @@ jobs:
                 uses: actions/setup-node@v3
                 with:
                     node-version-file: '.nvmrc'
-            -   name: Install tradem-common
+            -   name: Build
                 shell: bash
                 run: |
-                    cd packages/tradem-common;
                     yarn install --frozen-lockfile;
-            -   name: Build tradem-creator
-                shell: bash
-                run: |
-                    cd packages/tradem-creator;
-                    yarn install --frozen-lockfile;
-                    yarn build;
+                    yarn workspace tradem-creator build
             -   name: Deploy
                 uses: peaceiris/actions-gh-pages@v3
                 with:

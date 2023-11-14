@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "workspaces": [
+        "packages/tradem-common",
+        "packages/tradem-creator",
+        "packages/tradem-experiment"
+    ]
+}
