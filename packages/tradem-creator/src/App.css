@@ -45,7 +45,7 @@ form.creator-form-container div.creator-form-rows div.creator-form-group {
 }
 
 form.creator-form-container div.creator-form-rows div.creator-form-group div.creator-form-row {
-    min-width: calc(50% - 10px);
+    min-width: calc(100% / 3 - 10px);
 }
 
 form.creator-form-container div.creator-form-rows div.creator-form-row {
