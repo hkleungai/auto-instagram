@@ -123,7 +123,7 @@ function CanvasMaker(props: { initedCanvas: PoemCanvas, fontFamilyToLabelLookup:
         const newFontFamily = event.target.value;
 
         C.assert(
-            Object.prototype.hasOwnProperty.call(props.fontFamilyToLabelLookup, newFontFamily),
+            Object.hasOwn(props.fontFamilyToLabelLookup, newFontFamily),
             'Invalid value for `font-family`',
         );
 
